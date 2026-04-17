@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>🎂 Happy Birthday vava</title>
+
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        background: linear-gradient(#0f2027, #203a43, #2c5364);
+        font-family: 'Arial', sans-serif;
+    }
+
+    canvas {
+        display: block;
+    }
+
+    h1 {
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        top: 20px;
+        color: #fff;
+        font-size: 55px;
+        text-shadow: 0 0 20px #00eaff, 0 0 40px #00eaff;
+        animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+        from { text-shadow: 0 0 10px #00eaff; }
+        to { text-shadow: 0 0 30px #00eaff; }
+    }
+</style>
+</head>
+
+<body>
+
+<h1>🎉 Feliz Aniversario vava 🎉</h1>
+<canvas id="c"></canvas>
+
+<script>
+const c = document.getElementById("c");
+const ctx = c.getContext("2d");
+
+c.width = innerWidth;
+c.height = innerHeight;
+
+// 🎂 BOLO
+function drawCake() {
+    // base
+    ctx.fillStyle = "#a3d2a7";
+    ctx.fillRect(c.width/2 - 160, c.height/2, 320, 130);
+
+    // camada
+    ctx.fillStyle = "#f7e8aa";
+    ctx.fillRect(c.width/2 - 130, c.height/2 - 90, 260, 110);
+
+    // topo chocolate
+    ctx.fillStyle = "#5e4425";
+    ctx.fillRect(c.width/2 - 90, c.height/2 - 170, 180, 90);
+
+    // cobertura escorrendo
+    ctx.fillStyle = "#8b5a2b";
+    for (let i = 0; i < 10; i++) {
+        ctx.beginPath();
+        ctx.arc(c.width/2 - 80 + i*18, c.height/2 - 80, 10, 0, Math.PI);
+        ctx.fill();
+    }
+}
+
+// 🕯️ VELAS
+let candles = [];
+for (let i = 0; i < 5; i++) {
+    candles.push({
+        x: c.width/2 - 60 + i*30,
+        y: c.height/2 - 170,
+        flame: true
+    });
+}
+
+function drawCandles() {
+    candles.forEach(ca => {
+        ctx.fillStyle = "#66cccc";
+        ctx.fillRect(ca.x, ca.y, 10, 40);
+
+        if (ca.flame) {
+            ctx.beginPath();
+            ctx.fillStyle = `rgba(255,150,0,${Math.random()})`;
+            ctx.arc(ca.x+5, ca.y-8, 8 + Math.random()*4, 0, Math.PI*2);
+            ctx.fill();
+        }
+    });
+}
+
+// 🎊 CONFETE
+let confetti = [];
+for (let i=0;i<200;i++){
+    confetti.push({
+        x: Math.random()*c.width,
+        y: Math.random()*c.height,
+        size: Math.random()*6,
+        speed: Math.random()*4+1,
+        color:`hsl(${Math.random()*360},100%,50%)`
+    });
+}
+
+function drawConfetti(){
+    confetti.forEach(p=>{
+        ctx.fillStyle=p.color;
+        ctx.fillRect(p.x,p.y,p.size,p.size);
+        p.y+=p.speed;
+
+        if(p.y>c.height){
+            p.y=0;
+            p.x=Math.random()*c.width;
+        }
+    });
+}
+
+// 🎆 FOGOS
+let fireworks=[];
+
+function createFirework(){
+    fireworks.push({
+        x: Math.random()*c.width,
+        y: Math.random()*c.height/2,
+        particles: Array.from({length:30},()=>({
+            dx:(Math.random()-0.5)*5,
+            dy:(Math.random()-0.5)*5,
+            life:50
+        }))
+    });
+}
+
+setInterval(createFirework,1000);
+
+function drawFireworks(){
+    fireworks.forEach(f=>{
+        f.particles.forEach(p=>{
+            ctx.fillStyle="white";
+            ctx.fillRect(f.x,p.dy+=p.dy,p.dx+=p.dx,2,2);
+            p.life--;
+        });
+    });
+}
+
+// 🎮 INTERAÇÃO
+window.onclick=()=>{
+    candles.forEach(c=>c.flame=false);
+};
+
+// ✨ LOOP
+function loop(){
+    ctx.clearRect(0,0,c.width,c.height);
+
+    drawConfetti();
+    drawFireworks();
+    drawCake();
+    drawCandles();
+
+    requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+
+</body>
+</html>
